@@ -12,11 +12,29 @@
 
 ### version control
 
+- versioning schema
+> earlier i tried using my custom conventions with fancy rules
+> > it looked like "0xa0a0a0" which is the same as "0.0.0"
+> > it was easy to integrate in c programs and store as a hex number
+> > but it was useless and inconvenient anyways
+> once i started using cmake - i switched to the traditional "m.m.m"
+> > major for backwards incompatible changes
+> > minor for backwards compatible changes, extensions, features
+> > micro for fully compatible changes, fixes, patches
 - on local - use git - god instrument to rule them all
 - on remote - use own git service and github as a backup
 - ignored content
 > generated files - always
 > resource files - always bigger than 256kb, sometimes bigger than 64kb
+- i am gonna stop using submodules
+> i am having too many changes in my submodules
+> my urls are very inconsistent
+> i would preffer taking a bare minimum of dependency repos i need
+- i am gonna stop using tags
+> my git history is not very stable
+> and i can afford "git rebase -i" on my private solo projects
+> tags are harder to manage in case of story changes
+> branches are more flexible
 
 ### source code editing
 
