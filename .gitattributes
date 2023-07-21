@@ -1,0 +1,14 @@
+# auto-detect and normalise LF instead of having core.autocrlf set
+* text=auto
+# no diffs, no eol fixes
+##image
+*.png binary
+*.jpg binary
+*.ico binary
+##audio
+*.mp3 binary
+*.ogg binary
+*.wav binary
+##video
+*.mp4 binary
+*.mov binary
