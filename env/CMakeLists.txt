@@ -4,7 +4,7 @@ include(cmake/mHelpRegex.cmake)
 include(cmake/mHelpOpt.cmake)
 # proj
 project(NikoZDev
-    VERSION 0.0.0
+    VERSION 0.1.0
     DESCRIPTION
     "nikodim-zimin-developer root repo"
     ) # project
