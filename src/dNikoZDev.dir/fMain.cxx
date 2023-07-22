@@ -1,18 +1,18 @@
 #ifndef dNikoZDevMainCxx
 #define dNikoZDevMainCxx
-#include <dNikoZDev.dir/fMain.hxx>
+#include <dNikoZDev.dir/fHead.hxx>
 //content
-#ifdef dNikoZDevMakeProjExe
+#ifdef dNikoZDevMakeExe
 //actions
 int main(int vArgC, char *vArgV[])
 {
-#	ifdef dNikoZDevTestProjExe
+#ifdef dNikoZDevTestExe
 	if constexpr(1)
 	{
 		std::cout << "hello test" << std::endl;
 	}
-#	endif//dNikoZDevTestProjExe
+#endif//dNikoZDevTestExe
 	return nNikoZDev::fMain(vArgC, vArgV);
 }//main
-#endif//dNikoZDevMakeProjExe
+#endif//dNikoZDevMakeExe
 #endif//dNikoZDevMainCxx

@@ -1,5 +1,5 @@
-#ifndef dNikoZDevMainHxx
-#define dNikoZDevMainHxx
+#ifndef dNikoZDevHeadHxx
+#define dNikoZDevHeadHxx
 //headers
 #include <iostream>
 //content
@@ -12,4 +12,4 @@ inline auto fMain(int vArgC, char *vArgV[])
 	return 0;
 }//fMain
 }//namespace nNikoZDev
-#endif//dNikoZDevMainHxx
+#endif//dNikoZDevHeadHxx
