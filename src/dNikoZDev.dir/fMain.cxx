@@ -1,6 +1,6 @@
 #ifndef dNikoZDevMainCxx
 #define dNikoZDevMainCxx
-#include <dNikoZDev.dir/fMain.hxx>
+#include <dNikoZDev.dir/fHead.hxx>
 //content
 #ifdef dNikoZDevMakeExe
 //actions

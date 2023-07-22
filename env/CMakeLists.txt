@@ -27,10 +27,25 @@ set(RUNTIME_OUTPUT_DIRECTORY ${vFdirGen}/dExe.dir)
 set(LIBRARY_OUTPUT_DIRECTORY ${vFdirGen}/dLib.dir)
 set(ARCHIVE_OUTPUT_DIRECTORY ${vFdirGen}/dLib.dir)
 # make
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
+##type
+set(oProjType "Hol")
+set(vProjTypeList "Exe;Hol;Dll;Sll")
+fOptEnum(oProjType vProjTypeList "project type")
+if(oProjType STREQUAL "")
+    message("project type is not defined")
+elseif(oProjType STREQUAL "Exe")
+elseif(oProjType STREQUAL "Hol")
+elseif(oProjType STREQUAL "Dll")
+elseif(oProjType STREQUAL "Sll")
+else()
+    message("project type is not handled")
+endif(oProjType STREQUAL "")
+##conf
 set(oProjConf "Work")
-set(vProjContList "Play;Work;")
+set(vProjContList "Work;Play;Dist")
 fOptEnum(oProjConf vProjConfList "project configuration")
-if(NOT oProjConf)
+if(NOT oProjConf IN_LIST vProjConfList)
     message("project configuration is not defined")
 elseif(oProjConf STREQUAL "Play")
     set(CMAKE_BUILD_TYPE Release)
@@ -39,18 +54,16 @@ elseif(oProjConf STREQUAL "Work")
 else()
     message("project configuration is not handled")
 endif() # oProjConf
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ## lib
 add_library(${vProjNameLib} INTERFACE)
 set(vMakeDirsLib ${vFdirSrcRoot})
 set(vMakeDefsLib
     "$<$<CXX_COMPILER_ID:MSVC>:>"
     "$<$<CXX_COMPILER_ID:GNU,Clang>:>"
-    "d${vProjName}ProjName=\"${vProjName}\""
-    "d${vProjName}ProjVnum=\"${vProjVnum}\""
-    "d${vProjName}ProjDesc=\"${vProjDesc}\""
-    "d${vProjName}ProjConf=\"${oProjConf}\""
-    "d${vProjName}ProjConf${oProjConf}=1"
+    "d${vProjName}ProjName=\"${vProjName}\"" "dProjName=\"${vProjName}\""
+    "d${vProjName}ProjVnum=\"${vProjVnum}\"" "dProjVnum=\"${vProjVnum}\""
+    "d${vProjName}ProjDesc=\"${vProjDesc}\"" "dProjDesc=\"${vProjDesc}\""
+    "d${vProjName}ProjConf${oProjConf}=1" "dProjConf${oProjConf}=1"
     ) # vMakeDefsLib
 set(vMakeFeatLib
     cxx_std_20
@@ -97,5 +110,5 @@ if(oMakeExe)
     target_compile_features(${vProjNameExe} PRIVATE ${vMakeFeatExe})
     target_compile_definitions(${vProjNameExe} PRIVATE ${vMakeDefsExe})
     target_include_directories(${vProjNameExe} PRIVATE ${vMakeDirsExe})
-    target_precompile_headers(${vProjNameExe} PRIVATE ${vFdirSrcBase}/fMain.hxx)
+    target_precompile_headers(${vProjNameExe} PRIVATE ${vFdirSrcBase}/fHead.hxx)
 endif(oMakeExe)
