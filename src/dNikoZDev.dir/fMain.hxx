@@ -1,7 +1,7 @@
 #ifndef dNikoZDevMainHxx
 #define dNikoZDevMainHxx
 //headers
-#include <iostream>
+#include <dNikoZDev.dir/fHead.hxx>
 //content
 namespace nNikoZDev
 {
