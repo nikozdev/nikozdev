@@ -6,13 +6,7 @@
 //actions
 int main(int vArgC, char *vArgV[])
 {
-#ifdef dNikoZDevTestExe
-	if constexpr(1)
-	{
-		std::cout << "hello test" << std::endl;
-	}
-#endif//dNikoZDevTestExe
-	return nNikoZDev::fMain(vArgC, vArgV);
+	return nNikoZDev::nMain::fMain(vArgC, vArgV);
 }//main
 #endif//dNikoZDevMakeExe
 #endif//dNikoZDevMainCxx
