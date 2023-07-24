@@ -2,5 +2,5 @@
 foreach(vLibsPick IN ITEMS @vLibsList@)
     find_package(${vLibsPick} REQUIRED)
 endforeach()
-include("@vProjFdirDst@/@vProjNameDst@.cmake")
+include("@vFdirDstProj@/@vProjNameDst@.cmake")
 check_required_components("@vProjNameDst@")
