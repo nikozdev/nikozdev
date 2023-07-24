@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.3)
+cmake_minimum_required(VERSION 3.3...3.8)
 include_guard(GLOBAL)
 # mods
 include(dCmake.dir/dHelp.dir/fRegex.cmake)
@@ -32,26 +32,31 @@ set(vFdirSrcRoot "${vFdirLocRoot}/src")
 set(vFdirSrcBase "${vFdirSrcRoot}/${vProjNameDir}")
 set(vFdirGenRoot "${vFdirLocRoot}/gen")
 set(vFdirEnvRoot "${vFdirLocRoot}/env")
-set(vFdirDocRoot ${vFdirLocRoot}/doc)
-set(vFdirDstRoot "${CMAKE_INSTALL_PREFIX}")
+set(vFdirDocRoot "${vFdirLocRoot}/doc")
+set(vFdirDstRoot "$ENV{HOME}$ENV{USERPROFILE}/.local")
 set(vFdirDstBins "${vFdirDstRoot}/bin")
 set(vFdirDstLibs "${vFdirDstRoot}/lib")
 set(vFdirDstHead "${vFdirDstRoot}/include")
 set(vFdirDstProj "${vFdirDstLibs}/cmake/p${vProjNameVer}.dir")
-set(CMAKE_INSTALL_PREFIX "${vFdirDst}")
+set(CMAKE_INSTALL_PREFIX "${vFdirDstRoot}" CACHE PATH "install prefix" FORCE)
 #conf
-set(oProjConf "Work")
+set(oProjConfPick "Work")
 set(vProjConfList "Work;Play;Dist;")
-fOptEnum(oProjConf vProjConfList "project configuration")
-if(oProjConf STREQUAL "")
+set(vProjConfDesc "controlled by oProjConfPick")
+fOptEnum(oProjConfPick vProjConfList "project configuration")
+if(oProjConfPick STREQUAL "")
     message("project configuration is not defined")
-elseif(oProjConf STREQUAL "Play")
-    set(CMAKE_BUILD_TYPE Release)
-elseif(oProjConf STREQUAL "Work")
-    set(CMAKE_BUILD_TYPE Debug)
+elseif(oProjConfPick STREQUAL "Work")
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING ${vProjConfDesc} FORCE)
+elseif(oProjConfPick STREQUAL "Play")
+    set(CMAKE_BUILD_TYPE RelWithDebInfo CACHE STRING ${vProjConfDesc} FORCE)
+elseif(oProjConfPick STREQUAL "Dist")
+    set(CMAKE_BUILD_TYPE Release CACHE STRING ${vProjConfDesc} FORCE)
 else()
     message("project configuration is not handled")
-endif(oProjConf STREQUAL "")
+endif(oProjConfPick STREQUAL "")
+fOptEnum(CMAKE_BUILD_TYPE CMAKE_CONFIGURATION_TYPES ${vProjConfDesc})
+mark_as_advanced(FORCE CMAKE_BUILD_TYPE)
 # make
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ## lib
@@ -66,8 +71,7 @@ set(vMakeDefsLib
     "d${vProjName}ProjName=\"${vProjName}\"" "dProjName=\"${vProjName}\""
     "d${vProjName}ProjVnum=\"${vProjVnum}\"" "dProjVnum=\"${vProjVnum}\""
     "d${vProjName}ProjDesc=\"${vProjDesc}\"" "dProjDesc=\"${vProjDesc}\""
-    "d${vProjName}ProjConf${oProjConf}" "dProjConf${oProjConf}"
-    "d${vProjName}ProjType${oProjType}" "dProjType${oProjConf}"
+    "d${vProjName}ProjConf${oProjConfPick}" "dProjConf${oProjConfPick}"
     ) # vMakeDefsLib
 set(vMakeFeatLib
     cxx_std_23
@@ -82,7 +86,7 @@ set(vMakeOptsLib
     ) # vMakeOptsLib
 ### libs
 set(vLibsList "")
-find_package(pLibAsist CONFIG REQUIRED)
+find_package(pLibAsist "1.0.1" REQUIRED)
 target_link_libraries(${vProjNameLib} INTERFACE pLibAsist::lLibAsist)
 list(APPEND vLibsList "pLibAsist")
 ### last
@@ -98,7 +102,7 @@ target_sources(${vProjNameLib}
     ) # target_sources
 target_precompile_headers(${vProjNameLib} INTERFACE ${vFdirSrcBase}/fHead.hxx)
 ## exe
-option(oMakeExe "make project executable" 0)
+option(oMakeExe "make project executable" 1)
 if(oMakeExe)
     add_executable(${vProjNameExe} ${vFdirSrcBase}/fMain.cxx)
     set(vMakeDirsExe "")
@@ -106,7 +110,7 @@ if(oMakeExe)
     set(vMakeFeatExe "")
     set(vMakeOptsExe "")
     # test
-    option(oTestExe "test project executable" 0)
+    option(oTestExe "test project executable" 1)
     if(oTestExe)
         include(CTest)
         enable_testing()
@@ -120,6 +124,8 @@ if(oMakeExe)
         set_tests_properties(tHello PROPERTIES
             PASS_REGULAR_EXPRESSION ${vPassRegex}
             ) # set_tests_properties
+        #
+        mark_as_advanced(FORCE CMAKE_BUILD_TYPE)
     endif(oTestExe)
     # libs
     target_link_libraries(${vProjNameExe} PRIVATE ${vProjNameLib})
