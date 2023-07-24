@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.3)
+include_guard(GLOBAL)
 # mods
 include(dCmake.dir/dHelp.dir/fRegex.cmake)
 include(dCmake.dir/dHelp.dir/fOpt.cmake)
@@ -10,22 +11,30 @@ project(NikoZDev
     ) # project
 enable_language(CXX)
 set(vProjName ${PROJECT_NAME})
-set(vProjNameLib "l${vProjName}") # header-only-library target
-set(vProjNameExe "e${vProjName}") # executable target
+set(vProjNameLib "l${vProjName}")
+set(vProjNameExe "e${vProjName}")
 set(vProjVnum ${PROJECT_VERSION})
+set(vProjVnumMajor ${PROJECT_VERSION_MAJOR})
+set(vProjVnumMinor ${PROJECT_VERSION_MINOR})
+set(vProjVnumMicro ${PROJECT_VERSION_PATCH})
 set(vProjDesc ${PROJECT_DESCRIPTION})
 # lang
 set(vLangVnum 23)
 set(CMAKE_CXX_STANDARD ${vLangVnum})
-set(CMAKE_CXX_STANDARD_REQUIRED ${vLangVnum})
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 # file
-set(vFdirLoc ${PROJECT_SOURCE_DIR}/..)
-set(vFdirSrcRoot ${vFdirLoc}/src)
-set(vFdirSrcBase ${vFdirSrcRoot}/d${vProjName}.dir)
-set(vFdirGen ${vFdirLoc}/gen)
-set(RUNTIME_OUTPUT_DIRECTORY ${vFdirGen}/dExe.dir)
-set(LIBRARY_OUTPUT_DIRECTORY ${vFdirGen}/dLib.dir)
-set(ARCHIVE_OUTPUT_DIRECTORY ${vFdirGen}/dLib.dir)
+set(vFdirLocRoot "${PROJECT_SOURCE_DIR}/..")
+set(vFdirSrcRoot "${vFdirLocRoot}/src")
+set(vFdirSrcBase "${vFdirSrcRoot}/d${vProjName}.dir")
+set(vFdirGenRoot "${vFdirLocRoot}/gen")
+set(vFdirEnvRoot "${vFdirLocRoot}/env")
+set(vFdirDocRoot "${vFdirLocRoot}/doc")
+set(vFdirDstRoot "${CMAKE_INSTALL_PREFIX}")
+set(vFdirDstBins "${vFdirDstRoot}/bin")
+set(vFdirDstLibs "${vFdirDstRoot}/lib")
+set(vFdirDstHead "${vFdirDstRoot}/include")
+set(CMAKE_INSTALL_PREFIX "${vFdirDstRoot}")
+set(vFdirLibRoot "${vFdirLocRoot}/lib")
 # make
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 ##type
@@ -43,7 +52,7 @@ else()
 endif(oProjType STREQUAL "")
 ##conf
 set(oProjConf "Work")
-set(vProjContList "Work;Play;Dist")
+set(vProjConfList "Work;Play;Dist;")
 fOptEnum(oProjConf vProjConfList "project configuration")
 if(NOT oProjConf IN_LIST vProjConfList)
     message("project configuration is not defined")
@@ -56,10 +65,8 @@ else()
 endif() # oProjConf
 ## lib
 add_library(${vProjNameLib} INTERFACE)
-set(vMakeDirsLib ${vFdirSrcRoot})
+set(vMakeDirsLib ${vFdirSrcRoot} ${vFdirDstHead})
 set(vMakeDefsLib
-    "$<$<CXX_COMPILER_ID:MSVC>:>"
-    "$<$<CXX_COMPILER_ID:GNU,Clang>:>"
     "d${vProjName}ProjName=\"${vProjName}\"" "dProjName=\"${vProjName}\""
     "d${vProjName}ProjVnum=\"${vProjVnum}\"" "dProjVnum=\"${vProjVnum}\""
     "d${vProjName}ProjDesc=\"${vProjDesc}\"" "dProjDesc=\"${vProjDesc}\""
@@ -73,9 +80,12 @@ set(vMakeFeatLib
 set(vMakeOptsLib
     -fpermissive
     -Wno-class-conversion
-    -Wno-error=narrowing -Wno-narrowing
+    -Wno-narrowing
+    -Wno-macro-redefined
     ) # vMakeOptsLib
 ### libs
+find_package(pLibAsist CONFIG REQUIRED)
+target_link_libraries(${vProjNameLib} INTERFACE pLibAsist::lLibAsist)
 ### last
 target_compile_options(${vProjNameLib} INTERFACE ${vMakeOptsLib})
 target_compile_features(${vProjNameLib} INTERFACE ${vMakeFeatLib})
@@ -95,7 +105,7 @@ if(oMakeExe)
     if(oTestExe)
         enable_testing()
         add_test(NAME tHello
-            COMMAND ${vFdirGen}/${vProjNameExe}
+            COMMAND ${vFdirGenRoot}/${vProjNameExe}
             ) # add_test
         set(vPassRegex "hello test")
         set_tests_properties(tHello PROPERTIES
@@ -104,7 +114,7 @@ if(oMakeExe)
         list(APPEND vMakeDefsExe "d${vProjName}TestExe")
     endif(oTestExe)
     # libs
-    target_link_libraries(${vProjNameExe} PRIVATE ${vProjNameLib})
+    target_link_libraries(${vProjNameExe} PUBLIC ${vProjNameLib})
     # last
     target_compile_options(${vProjNameExe} PRIVATE ${vMakeOptsExe})
     target_compile_features(${vProjNameExe} PRIVATE ${vMakeFeatExe})
