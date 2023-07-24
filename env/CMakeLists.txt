@@ -4,7 +4,7 @@ include(dCmake.dir/dHelp.dir/fRegex.cmake)
 include(dCmake.dir/dHelp.dir/fOpt.cmake)
 # proj
 project(NikoZDev
-    VERSION 0.1.0
+    VERSION 0.2.0
     DESCRIPTION
     "nikodim-zimin-developer root repo"
     ) # project
