@@ -12,7 +12,7 @@ set(vProjNameDir "d${vProjNameOri}.dir")
 set(vProjNameDst "p${vProjNameOri}")
 # vnum
 set(vProjVnumMajor 0)
-set(vProjVnumMinor 2)
+set(vProjVnumMinor 3)
 set(vProjVnumMicro 0)
 set(vProjVnumWhole "${vProjVnumMajor}.${vProjVnumMinor}.${vProjVnumMicro}")
 set(vProjVnumNamed
